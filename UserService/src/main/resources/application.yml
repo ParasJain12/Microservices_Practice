@@ -12,7 +12,7 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.MySQL8Dialect
   application:
-    name: USERSERVICE
+    name: USER-SERVICE
 eureka:
   instance:
     prefer-ip-address: true

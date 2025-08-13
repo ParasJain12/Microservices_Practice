@@ -16,7 +16,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   application:
-    name: HOTELSERVICE
+    name: HOTEL-SERVICE
 eureka:
   instance:
     prefer-ip-address: true
