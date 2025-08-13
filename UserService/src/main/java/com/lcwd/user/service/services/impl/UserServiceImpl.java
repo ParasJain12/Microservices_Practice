@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.lcwd.user.service.exceptions.ResourceNotFoundException;
+import com.lcwd.user.service.external.services.HotelService;
 import com.lcwd.user.service.model.Hotel;
 import com.lcwd.user.service.model.Rating;
 import com.lcwd.user.service.model.User;
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Autowired
+	private HotelService hotelService;
 	
 	private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
@@ -52,9 +56,9 @@ public class UserServiceImpl implements UserService {
 		List<Rating> ratings = Arrays.stream(ratingsForUser).toList();
 		List<Rating> ratingList = ratings.stream().map(rating ->{
 			//http://localhost:8082/hotels/b5961cf7-55ee-4070-817c-36649a1fe013
-			ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTELSERVICE/hotels/"+rating.getHotelId(), Hotel.class);
-			Hotel hotel = forEntity.getBody();
-			logger.info("Response status code: {}",forEntity.getStatusCode());
+			//ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTELSERVICE/hotels/"+rating.getHotelId(), Hotel.class);
+			Hotel hotel = hotelService.getHotel(rating.getHotelId());
+			//logger.info("Response status code: {}",forEntity.getStatusCode());
 			rating.setHotel(hotel);
 			return rating;
 		}).collect(Collectors.toList());
