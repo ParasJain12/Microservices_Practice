@@ -61,6 +61,14 @@ public class User {
 		this.about = about;
 	}
 
+	public List<Rating> getRatings() {
+		return ratings;
+	}
+
+	public void setRatings(List<Rating> ratings) {
+		this.ratings = ratings;
+	}
+
 	public User(String userId, String name, String email, String about) {
 		super();
 		this.userId = userId;

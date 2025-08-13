@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.lcwd.user.service.exceptions.ResourceNotFoundException;
+import com.lcwd.user.service.model.Rating;
 import com.lcwd.user.service.model.User;
 import com.lcwd.user.service.repository.UserRepository;
 import com.lcwd.user.service.services.UserService;
@@ -41,8 +42,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUser(String userId) {
 		User user =  userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User with given id not found"));
-		ArrayList forObject = restTemplate.getForObject("http://localhost:8083/ratings/users/4e030b72-6324-4aa4-9488-d87f53b4791f",ArrayList.class);
-		logger.info("{} ",forObject);
+		//ArrayList<Rating> ratingsForUser = restTemplate.getForObject("http://localhost:8083/ratings/users/4e030b72-6324-4aa4-9488-d87f53b4791f",ArrayList.class);
+		ArrayList<Rating> ratingsForUser = restTemplate.getForObject("http://localhost:8083/ratings/users/"+user.getUserId(),ArrayList.class);
+		logger.info("{} ",ratingsForUser);
+		user.setRatings(ratingsForUser);
 		return user;
 	}
 
