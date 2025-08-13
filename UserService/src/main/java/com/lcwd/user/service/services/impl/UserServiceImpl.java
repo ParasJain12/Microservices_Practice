@@ -1,6 +1,5 @@
 package com.lcwd.user.service.services.impl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -47,13 +46,13 @@ public class UserServiceImpl implements UserService {
 	public User getUser(String userId) {
 		User user =  userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User with given id not found"));
 		//ArrayList<Rating> ratingsForUser = restTemplate.getForObject("http://localhost:8083/ratings/users/4e030b72-6324-4aa4-9488-d87f53b4791f",ArrayList.class);
-		Rating[] ratingsForUser = restTemplate.getForObject("http://localhost:8083/ratings/users/"+user.getUserId(),Rating[].class);
+		Rating[] ratingsForUser = restTemplate.getForObject("http://RATINGSERVICE/ratings/users/"+user.getUserId(),Rating[].class);
 		logger.info("{} ",ratingsForUser);
 		
 		List<Rating> ratings = Arrays.stream(ratingsForUser).toList();
 		List<Rating> ratingList = ratings.stream().map(rating ->{
 			//http://localhost:8082/hotels/b5961cf7-55ee-4070-817c-36649a1fe013
-			ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://localhost:8082/hotels/"+rating.getHotelId(), Hotel.class);
+			ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTELSERVICE/hotels/"+rating.getHotelId(), Hotel.class);
 			Hotel hotel = forEntity.getBody();
 			logger.info("Response status code: {}",forEntity.getStatusCode());
 			rating.setHotel(hotel);
