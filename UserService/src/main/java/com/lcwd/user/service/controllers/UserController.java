@@ -18,6 +18,8 @@ import com.lcwd.user.service.model.User;
 import com.lcwd.user.service.services.UserService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 
 @RestController
 @RequestMapping("/users")
@@ -36,18 +38,25 @@ public class UserController {
 	}
 	
 	@GetMapping("/{userId}")
-	@CircuitBreaker(name="ratingHotelBreaker",fallbackMethod="ratingHotelFallback")
+	//@CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
+	//@Retry(name = "ratingHotelService", fallbackMethod = "ratingHotelFallback")
+	@RateLimiter(name = "userRateLimiter", fallbackMethod = "ratingHotelFallback")
 	public ResponseEntity<User> getSingleUser(@PathVariable String userId){
+		//logger.info("Retry count: {}",retryCount);	
 		User user = userService.getUser(userId);
 		return ResponseEntity.ok(user);
 	}
 	
+	//int retryCount = 1;
+	
 	//creating fall back method for circuitbreaker
 	public ResponseEntity<User> ratingHotelFallback(String userId, Exception ex){
 		//logger.info("Fallback is executed because service is down: ",ex.getMessage());
+		//logger.info("Retry count: {}",retryCount);
+		//retryCount++;
 		ex.printStackTrace();
 		User user = User.builder().email("dummy@gmail.com").name("Dummy").about("This user is created dummy because some service is down").userId("123").build();
-		return new ResponseEntity<>(user,HttpStatus.OK);
+		return new ResponseEntity<>(user,HttpStatus.BAD_REQUEST);
 	}
 	
 	@GetMapping
