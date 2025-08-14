@@ -20,7 +20,7 @@ spring:
           predicates:
             - Path=/ratings/**
   config:
-    import: configserver:http://localhost:8085
+    import: optional:configserver:http://localhost:8085
 #eureka:
 #  instance:
 #    prefer-ip-address: true
